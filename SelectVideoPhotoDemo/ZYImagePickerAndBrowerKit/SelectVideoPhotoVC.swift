@@ -21,13 +21,11 @@ class SelectVideoPhotoVC: UIViewController,ZYPhotoAlbumProtocol {
         let segView = VideoPhotoSegmentView(frame: CGRect.init(x: 0, y: 30, width: ZYScreenWidth, height: 44+44));
         self.view.addSubview(segView);
         
-        
         photoAlbumVC.maxSelectCount = 9   //最大可选择张数
         //self.navigationController?.present(photoAlbumVC, animated: true, completion: nil)
         self.view.addSubview(photoAlbumVC.view)
         self.addChild(photoAlbumVC)
         photoAlbumVC.view.frame = CGRect.init(x: 0, y: 64+44, width: ZYScreenWidth, height: ZYScreenHeight-64-44)
-        
         
         segView.segClosure = {(btn:UIButton) in
             

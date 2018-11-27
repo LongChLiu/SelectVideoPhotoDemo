@@ -52,11 +52,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SelectVideoPhotoDemo/ZYImagePickerAndBrowerKit/SelectVideoPhotoVC.swift"
-            timestampString = "564916724.987377"
+            timestampString = "564994294.405753"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
             landmarkName = "photoAlbum(selectPhotos:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -68,11 +68,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SelectVideoPhotoDemo/ZYImagePickerAndBrowerKit/SelectVideoPhotoVC.swift"
-            timestampString = "564916724.987715"
+            timestampString = "564994294.406101"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
@@ -84,11 +84,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SelectVideoPhotoDemo/ZYImagePickerAndBrowerKit/SelectVideoPhotoVC.swift"
-            timestampString = "564916724.987776"
+            timestampString = "564994294.406337"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
@@ -100,7 +100,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SelectVideoPhotoDemo/ZYImagePickerAndBrowerKit/Controller/Album/ZYVideoAlbumViewController.swift"
-            timestampString = "564917259.947517"
+            timestampString = "564977555.781243"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "211"

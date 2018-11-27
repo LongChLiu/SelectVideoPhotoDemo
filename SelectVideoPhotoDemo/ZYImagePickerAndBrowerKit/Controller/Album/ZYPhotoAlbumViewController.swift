@@ -120,8 +120,7 @@ class ZYPhotoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
         PHPhotoLibrary.shared().register(self)
         let status = PHPhotoLibrary.authorizationStatus()
         if status == .restricted || status == .denied {
-            // 无权限
-            // do something...
+            // 无权限 // do something...
             if ZYPhotoAlbumEnableDebugOn {
                 print("无相册访问权限")
             }
@@ -256,7 +255,9 @@ class ZYPhotoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as? ZYPhotoCollectionViewCell, self.photoData.assetArray.count > indexPath.row else {return ZYPhotoCollectionViewCell()}
         let asset = self.photoData.assetArray[indexPath.row]
-      
+        
+        cell.selectButton.isHidden = false;
+        
         // 新建一个默认类型的图像管理器imageManager
         let imageManager = PHImageManager.default()
         // 新建一个PHImageRequestOptions对象
@@ -273,18 +274,20 @@ class ZYPhotoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
             cell.photoImage = result!
         })
         
-        
         if type == .selectPhoto {
             
             if selectStyle == .number {
                 if let Index = photoData.seletedAssetArray.index(of: asset) {
                     cell.layer.mask = nil
                     cell.selectNumber = Index
-                    cell.selectButton.asyncSetImage(UIImage.zyCreateImageWithView(view: ZYPhotoNavigationViewController.zyGetSelectNuberView(index: "\(Index + 1)")), for: .selected)
+                    //cell.selectButton.asyncSetImage(UIImage.zyCreateImageWithView(view: ZYPhotoNavigationViewController.zyGetSelectNuberView(index: "\(Index + 1)")), for: .selected)
+                    cell.selectButton.setImage(UIImage.zyCreateImageWithView(view: ZYPhotoNavigationViewController.zyGetSelectNuberView(index: "\(Index + 1)")), for: .selected)
+                    
+                    //cell.selectButton.asyncSetImage(UIImage.zyCreateImageWithView(view: ZYPhotoNavigationViewController.zyGetSelectNuberView(index: "\(Index + 1)")), for: .selected)
+                    
                 }else{
                     cell.selectButton.isSelected = false
-                    if maxSelectCount != 0, photoData.seletedAssetArray.count >= maxSelectCount
-                    {
+                    if maxSelectCount != 0, photoData.seletedAssetArray.count >= maxSelectCount{
                         let maskLayer = CALayer()
                         maskLayer.frame = cell.bounds
                         maskLayer.backgroundColor = UIColor.init(white: 1, alpha: 0.5).cgColor
@@ -296,25 +299,26 @@ class ZYPhotoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
             }else{
                 cell.isChoose = self.photoData.divideArray[indexPath.row]
             }
+            
             cell.selectPhotoCompleted = { [weak self] in
                 guard let strongSelf = self else {return}
                 strongSelf.selectPhotoCell(cell: cell, index: indexPath.row)
             }
-        } else {
-            cell.selectButton.isHidden = true
+            
         }
         
         return cell
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if self.type == .selectPhoto {
             //应该是点击放大的操作
             
-            
-            
         }
     }
+    
+    
 }
 
 
