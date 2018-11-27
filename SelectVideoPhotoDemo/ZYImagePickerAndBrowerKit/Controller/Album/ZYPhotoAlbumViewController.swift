@@ -36,7 +36,7 @@ class ZYPhotoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
         flowLayout.minimumLineSpacing = shape
         flowLayout.minimumInteritemSpacing = shape
         //  collectionView
-        let collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: ZYScreenWidth, height: ZYScreenHeight), collectionViewLayout: flowLayout)
+        let collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: ZYScreenWidth, height: ZYScreenHeight-44*2-20), collectionViewLayout: flowLayout)
         collectionView.backgroundColor = UIColor.white
         collectionView.scrollIndicatorInsets = UIEdgeInsets(top: ZYNavigationTotalHeight, left: 0, bottom: 44+ZYHomeBarHeight, right: 0)
         //  添加协议方法
