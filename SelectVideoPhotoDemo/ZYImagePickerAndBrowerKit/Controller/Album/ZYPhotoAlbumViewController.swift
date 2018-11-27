@@ -402,23 +402,21 @@ class PhotoScanView: UIView {
         case .changed:
 
             //====================================
-            var translatedPoint = pan.translation(in: self)
-            var x = finallyPosition.x + translatedPoint.x
-            var y = finallyPosition.y + translatedPoint.y
+            let translatedPoint = pan.translation(in: self)
+            let x = finallyPosition.x + translatedPoint.x
+            let y = finallyPosition.y + translatedPoint.y
             self.imgView.center = CGPoint.init(x: x, y: y)
             pan.setTranslation(CGPoint.init(x: 0, y: 0), in: self)
             finallyPosition = self.imgView.center
-            
-            
-            
-            
-            self.alpha = 1/translatedPoint.x + 1/translatedPoint.y;
+            let r = sqrt(pow(x, 2)+pow(y, 2))
+            print("\(x) ___   \(y) _____ \(r)")
+            self.backgroundColor = UIColor.init(white: 0, alpha: (1 - (r >= 2000 ? 2000:r)/2000))
             
         case .ended ,.cancelled,.failed:
             
             UIView.animate(withDuration: 0.2) {
                 self.imgView.frame = self.originalFrame;
-                self.alpha = 1;
+                self.backgroundColor = UIColor.init(white: 0, alpha: 1)
             }
             
         default:
