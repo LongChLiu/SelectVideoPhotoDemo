@@ -282,9 +282,6 @@ class ZYPhotoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
                     cell.selectNumber = Index
                     //cell.selectButton.asyncSetImage(UIImage.zyCreateImageWithView(view: ZYPhotoNavigationViewController.zyGetSelectNuberView(index: "\(Index + 1)")), for: .selected)
                     cell.selectButton.setImage(UIImage.zyCreateImageWithView(view: ZYPhotoNavigationViewController.zyGetSelectNuberView(index: "\(Index + 1)")), for: .selected)
-                    
-                    //cell.selectButton.asyncSetImage(UIImage.zyCreateImageWithView(view: ZYPhotoNavigationViewController.zyGetSelectNuberView(index: "\(Index + 1)")), for: .selected)
-                    
                 }else{
                     cell.selectButton.isSelected = false
                     if maxSelectCount != 0, photoData.seletedAssetArray.count >= maxSelectCount{
@@ -312,13 +309,175 @@ class ZYPhotoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
     
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        
         if self.type == .selectPhoto {
             //应该是点击放大的操作
+            let asset = self.photoData.assetArray[indexPath.row]
+            let window = UIApplication.shared.delegate?.window
+            let view = PhotoScanView.init(frame: CGRect.init(x: 0, y: 0, width: ZYScreenWidth, height: ZYScreenHeight))
             
+            let cell = collectionView.cellForItem(at: indexPath)
+            let frameOriginal = collectionView.convert(cell!.frame, to: window as! UIView)
+            view.frame = frameOriginal;
+            window??.addSubview(view);
+            
+            view.tapClosure = {()->Void in
+                UIView.animate(withDuration: 0.2, animations: {
+                    //view.frame = frameOriginal
+                    view.configureImageZoomOut(frame: frameOriginal)
+                    
+                }) { (finish) in
+                    view.removeFromSuperview()
+                }
+            };
+            
+            
+            // 新建一个默认类型的图像管理器imageManager
+            let imageManager = PHImageManager.default()
+            // 新建一个PHImageRequestOptions对象
+            let imageRequestOption = PHImageRequestOptions()
+            // PHImageRequestOptions是否有效
+            imageRequestOption.isSynchronous = true
+            // 缩略图的压缩模式设置为无
+            imageRequestOption.resizeMode = .none
+            // 缩略图的质量为快速
+            imageRequestOption.deliveryMode = .fastFormat
+            // 按照PHImageRequestOptions指定的规则取出图片
+            imageManager.requestImage(for: asset, targetSize: CGSize.init(width: 140, height: 140), contentMode: .aspectFill, options: imageRequestOption, resultHandler: {
+                (result, _) -> Void in
+                
+                UIView.animate(withDuration: 0.25, animations: {
+                    //view.alpha = 1;
+                    view.frame = CGRect.init(x: 0, y: 0, width: ZYScreenWidth, height: ZYScreenHeight)
+                    view.configureImage(image: result!)
+                }) { (finish) in
+                    
+                }
+                
+            })
         }
+        
+        
     }
     
     
 }
 
 
+
+
+class PhotoScanView: UIView {
+    
+    var imgView:UIImageView! = nil
+    var tapClosure : (()->Void)! = nil
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame);self.backgroundColor = UIColor.black
+        let imgView = UIImageView.init(frame: CGRect.zero);
+        self.addSubview(imgView);
+        self.imgView = imgView;
+        self.imgView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(PhotoScanView.imgViewTapAction(tap:))))
+        self.imgView.isUserInteractionEnabled = true
+        
+        self.addGestureRecognizer(UIPanGestureRecognizer.init(target: self, action: #selector(imgViewPanAction(pan:))))
+        self.isUserInteractionEnabled = true
+    }
+    
+    var originalFrame : CGRect! = nil;
+    
+    
+    @objc func imgViewPanAction(pan:UIPanGestureRecognizer){
+        
+        
+        var panPosition : CGPoint! = nil
+        
+        var originalPosition : CGPoint! = self.imgView.center
+        var finallyPosition : CGPoint! = self.imgView.center
+        
+        switch pan.state {
+        case .began:
+            //panPosition = CGPoint.init(x: 0, y: 0)
+            print("")
+        case .changed:
+
+            //====================================
+            var translatedPoint = pan.translation(in: self)
+            var x = finallyPosition.x + translatedPoint.x
+            var y = finallyPosition.y + translatedPoint.y
+            self.imgView.center = CGPoint.init(x: x, y: y)
+            pan.setTranslation(CGPoint.init(x: 0, y: 0), in: self)
+            finallyPosition = self.imgView.center
+            
+            
+            
+            
+            self.alpha = 1/translatedPoint.x + 1/translatedPoint.y;
+            
+        case .ended ,.cancelled,.failed:
+            
+            UIView.animate(withDuration: 0.2) {
+                self.imgView.frame = self.originalFrame;
+                self.alpha = 1;
+            }
+            
+        default:
+            break;
+        }
+    }
+    
+    
+    @objc func imgViewTapAction(tap:UITapGestureRecognizer){
+        if self.tapClosure != nil {
+            self.tapClosure()
+        }
+    }
+    
+    func configureImage(image:UIImage){
+        let width = image.size.width;
+        let height = image.size.height;
+        let radio = width / height;
+        
+        let totalWidth = self.frame.size.width
+        let totalHeight = self.frame.size.height
+        
+        if radio >= 1 {
+            self.imgView.frame = CGRect.init(x: 0, y: (totalHeight - totalWidth/radio)/2.0, width: totalWidth, height: totalWidth/radio)
+        }else{
+            self.imgView.frame = CGRect.init(x: 0, y: (totalHeight - totalWidth/radio)/2.0, width: totalWidth, height: totalWidth/radio)
+        }
+        
+        self.imgView.image = image
+        
+        self.originalFrame = self.imgView.frame
+    }
+    
+    
+    func configureImageZoomOut(frame:CGRect){
+        
+        self.frame = frame
+        
+        let width = self.imgView.image!.size.width;
+        let height = self.imgView.image!.size.height;
+        let radio = width / height;
+        
+        let totalWidth = frame.size.width
+        let totalHeight = frame.size.height
+        
+        if radio >= 1 {
+            self.imgView.frame = CGRect.init(x: 0, y: (totalHeight - totalWidth*radio)/2.0, width: totalWidth, height: totalWidth*radio)
+        }else{
+            self.imgView.frame = CGRect.init(x: 0, y: (totalHeight - totalWidth/radio)/2.0, width: totalWidth, height: totalWidth/radio)
+        }
+        
+        self.originalFrame = self.imgView.frame
+        
+    }
+    
+    
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
