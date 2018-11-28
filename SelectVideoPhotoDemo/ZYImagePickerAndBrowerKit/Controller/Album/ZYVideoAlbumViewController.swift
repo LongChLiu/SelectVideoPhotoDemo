@@ -306,7 +306,8 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
             if let Index = photoData.seletedAssetArray.index(of: asset) {
                 cell.layer.mask = nil
                 cell.selectNumber = Index
-                cell.selectButton.asyncSetImage(UIImage.zyCreateImageWithView(view: ZYVideoNavigationViewController.zyGetSelectNuberView(index: "\(Index + 1)")), for: .selected)
+                //cell.selectButton.asyncSetImage(UIImage.zyCreateImageWithView(view: ZYVideoNavigationViewController.zyGetSelectNuberView(index: "\(Index + 1)")), for: .selected)
+                cell.selectButton.setImage(UIImage.zyCreateImageWithView(view: ZYVideoNavigationViewController.zyGetSelectNuberView(index: "\(Index + 1)")), for: .selected)
             }else{
                 cell.selectButton.isSelected = false
                 if maxSelectCount != 0, photoData.seletedAssetArray.count >= maxSelectCount
