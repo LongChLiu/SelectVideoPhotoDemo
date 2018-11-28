@@ -35,7 +35,7 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
         flowLayout.minimumLineSpacing = shape
         flowLayout.minimumInteritemSpacing = shape
         //  collectionView
-        let collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: ZYScreenWidth, height: ZYScreenHeight), collectionViewLayout: flowLayout)
+        let collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: ZYScreenWidth, height: ZYScreenHeight-64), collectionViewLayout: flowLayout)
         collectionView.backgroundColor = UIColor.white
         collectionView.scrollIndicatorInsets = UIEdgeInsets(top: ZYNavigationTotalHeight, left: 0, bottom: 44+ZYHomeBarHeight, right: 0)
         // 添加协议方法 //
@@ -282,9 +282,25 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
             cell.photoImage = result!
         })
         
-//        imageManager.requestAVAsset(forVideo: asset, options: nil) { (<#AVAsset?#>, <#AVAudioMix?#>, <#[AnyHashable : Any]?#>) in
-//
-//        }
+        cell.timeLabel.isHidden = false
+        let assetTime = asset.duration;print("视频时长: \(assetTime)");
+        if let assetSecond = assetTime/60 as Double?,assetSecond >= 60 {
+            if let assetThird = assetSecond/60 as Double?,assetThird  >= 60{
+                let hourStr = String.init(format: "%02ld", Int(assetThird));
+                let minites = String.init(format: "%02ld", Int(assetSecond.truncatingRemainder(dividingBy: 60)));
+                let seconds = String.init(format: "%02ld", Int(assetThird.truncatingRemainder(dividingBy: 3600)));
+                cell.timeLabel.text = "\(hourStr):\(minites):\(seconds)"
+            }else{//不足小时
+                let minites = String.init(format: "%02ld", Int(assetSecond));//分钟
+                let seconds = String.init(format: "%02ld", Int(assetTime.truncatingRemainder(dividingBy: 60)));//秒
+                cell.timeLabel.text = "\(minites):\(seconds)"
+            }
+        }else{//不足一分钟，展示秒 00：58
+            let seconds = String.init(format: "%02ld", Int(assetTime));
+            cell.timeLabel.text = "00:\(seconds)"
+        }
+        
+        
         
         if selectStyle == .number {
             if let Index = photoData.seletedAssetArray.index(of: asset) {
@@ -321,7 +337,6 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
         self.showLoadingView(inView: self.view)
         var selectPhotos: [ZYPhotoModel] = Array(repeating: ZYPhotoModel(), count: 1)
         let group = DispatchGroup()
-        
         /*得到选中视频的图片*/
         group.enter()
         let photoModel = ZYPhotoModel()

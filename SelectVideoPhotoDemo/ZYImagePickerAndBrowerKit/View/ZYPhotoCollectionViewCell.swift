@@ -30,6 +30,16 @@ class ZYPhotoCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
+    lazy var timeLabel: UILabel = {
+        let label = UILabel()
+        label.frame = CGRect.init(x: 0, y: self.contentView.bounds.size.height-20, width: self.contentView.bounds.size.width-5, height: 20)
+        label.textAlignment = .right
+        label.font = UIFont.systemFont(ofSize: 11)
+        label.textColor = UIColor.white
+        label.backgroundColor = UIColor.clear
+        return label
+    }()
+    
     var selectNumber = 0 {
         didSet {
             self.selectButton.isSelected = true
@@ -59,9 +69,10 @@ class ZYPhotoCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         self.contentView.addSubview(self.photoImageView)
         self.contentView.addSubview(self.selectButton)
+        self.contentView.addSubview(self.timeLabel)
+        self.timeLabel.isHidden = true;
     }
     
     required init?(coder aDecoder: NSCoder) {
