@@ -388,11 +388,7 @@ class PhotoScanView: UIView {
     
     
     @objc func imgViewPanAction(pan:UIPanGestureRecognizer){
-        
-        
-        var panPosition : CGPoint! = nil
-        
-        var originalPosition : CGPoint! = self.imgView.center
+        //var _ : CGPoint! = nil;var _ : CGPoint! = self.imgView.center;
         var finallyPosition : CGPoint! = self.imgView.center
         
         switch pan.state {
@@ -400,7 +396,6 @@ class PhotoScanView: UIView {
             //panPosition = CGPoint.init(x: 0, y: 0)
             print("")
         case .changed:
-
             //====================================
             let translatedPoint = pan.translation(in: self)
             let x = finallyPosition.x + translatedPoint.x
@@ -411,14 +406,11 @@ class PhotoScanView: UIView {
             let r = sqrt(pow(x, 2)+pow(y, 2))
             print("\(x) ___   \(y) _____ \(r)")
             self.backgroundColor = UIColor.init(white: 0, alpha: (1 - (r >= 2000 ? 2000:r)/2000))
-            
         case .ended ,.cancelled,.failed:
-            
             UIView.animate(withDuration: 0.2) {
                 self.imgView.frame = self.originalFrame;
                 self.backgroundColor = UIColor.init(white: 0, alpha: 1)
             }
-            
         default:
             break;
         }

@@ -52,7 +52,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SelectVideoPhotoDemo/ZYImagePickerAndBrowerKit/SelectVideoPhotoVC.swift"
-            timestampString = "565003926.7269289"
+            timestampString = "565076499.423366"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "76"
@@ -68,7 +68,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SelectVideoPhotoDemo/ZYImagePickerAndBrowerKit/SelectVideoPhotoVC.swift"
-            timestampString = "565003926.726999"
+            timestampString = "565076499.423432"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "66"
@@ -84,7 +84,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SelectVideoPhotoDemo/ZYImagePickerAndBrowerKit/SelectVideoPhotoVC.swift"
-            timestampString = "565003926.727055"
+            timestampString = "565076499.423479"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "61"
@@ -100,12 +100,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SelectVideoPhotoDemo/ZYImagePickerAndBrowerKit/Controller/Album/ZYVideoAlbumViewController.swift"
-            timestampString = "564977555.781243"
+            timestampString = "565076499.423527"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "211"
-            endingLineNumber = "211"
-            landmarkName = "selectSuccess(fromeView:selectAssetArray:)"
+            startingLineNumber = "202"
+            endingLineNumber = "202"
+            landmarkName = "selectSuccess(fromView:selectAssetArray:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SelectVideoPhotoDemo/ZYImagePickerAndBrowerKit/Controller/Album/ZYVideoAlbumViewController.swift"
+            timestampString = "565076499.423903"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "322"
+            endingLineNumber = "322"
+            landmarkName = "collectionView(_:didSelectItemAt:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

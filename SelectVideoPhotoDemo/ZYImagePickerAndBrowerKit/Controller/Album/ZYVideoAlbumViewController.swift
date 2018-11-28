@@ -38,7 +38,7 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
         let collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: ZYScreenWidth, height: ZYScreenHeight), collectionViewLayout: flowLayout)
         collectionView.backgroundColor = UIColor.white
         collectionView.scrollIndicatorInsets = UIEdgeInsets(top: ZYNavigationTotalHeight, left: 0, bottom: 44+ZYHomeBarHeight, right: 0)
-        //  添加协议方法
+        // 添加协议方法 //
         collectionView.delegate = self
         collectionView.dataSource = self
         //  设置 cell
@@ -64,7 +64,7 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
     private var photoData = ZYPhotoDataSource()
     
     deinit {
-        if ZYPhotoAlbumEnableDebugOn {
+        if ZYPhotoAlbumEnableDebugOn{
             print("=====================\(self)未内存泄露")
         }
     }
@@ -79,14 +79,13 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
         self.view.addSubview(self.photoCollectionView)
         //self.initNavigation()
         self.rightClicked = { [unowned self] in
-            self.selectSuccess(fromeView: self.view, selectAssetArray: self.photoData.seletedAssetArray)
+            self.selectSuccess(fromView: self.view, selectAssetArray: self.photoData.seletedAssetArray)
         }
         self.getAllPhotos()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         UIApplication.shared.setStatusBarStyle(.lightContent, animated: true)
         if self.photoData.dataChanged {
             self.photoCollectionView.reloadData()
@@ -95,7 +94,6 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
         self.photoData.dataChanged = false
     }
     
@@ -109,13 +107,6 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
     
     // 完成闭包
     var rightClicked: (() -> Void)?
-    
-//    private func setBottomView() {
-//        self.bottomView.rightClicked = { [unowned self] in
-//            self.selectSuccess(fromeView: self.view, selectAssetArray: self.photoData.seletedAssetArray)
-//        }
-//        self.view.addSubview(self.bottomView)
-//    }
     
     private func getAllPhotos() {
         //  注意点！！-这里必须注册通知，不然第一次运行程序时获取不到图片，以后运行会正常显示。体验方式：每次运行项目时修改一下 Bundle Identifier，就可以看到效果。
@@ -189,8 +180,8 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
         photoCollectionView.reloadData()
     }
     
-    private func selectSuccess(fromeView: UIView, selectAssetArray: [PHAsset]) {
-        self.showLoadingView(inView: fromeView)
+    private func selectSuccess(fromView: UIView, selectAssetArray: [PHAsset]) {
+        self.showLoadingView(inView: fromView)
         var selectPhotos: [ZYPhotoModel] = Array(repeating: ZYPhotoModel(), count: selectAssetArray.count)
         let group = DispatchGroup()
         
@@ -332,34 +323,28 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
         let group = DispatchGroup()
         
         /*得到选中视频的图片*/
-        //for i in 0 ..< selectAssetArray.count {
-            //let asset = selectAssetArray[i]
-            group.enter()
-            let photoModel = ZYPhotoModel()
-            _ = ZYCachingImageManager.default().requestThumbnailImage(for: phAsset, resultHandler: { (image: UIImage?, dictionry: Dictionary?) in
-                photoModel.thumbnailImage = image
-            })
-            _ = ZYCachingImageManager.default().requestPreviewImage(for: phAsset, progressHandler: nil, resultHandler: { (image: UIImage?, dictionry: Dictionary?) in
-                var downloadFinined = true
-                if let cancelled = dictionry![PHImageCancelledKey] as? Bool {
-                    downloadFinined = !cancelled
-                }
-                if downloadFinined, let error = dictionry![PHImageErrorKey] as? Bool {
-                    downloadFinined = !error
-                }
-                if downloadFinined, let resultIsDegraded = dictionry![PHImageResultIsDegradedKey] as? Bool {
-                    downloadFinined = !resultIsDegraded
-                }
-                if downloadFinined, let photoImage = image {
-                    photoModel.originImage = photoImage
-                    selectPhotos[0] = photoModel
-                    group.leave()
-                }
-            })
-        //}
-        
-        
-        
+        group.enter()
+        let photoModel = ZYPhotoModel()
+        _ = ZYCachingImageManager.default().requestThumbnailImage(for: phAsset, resultHandler: { (image: UIImage?, dictionry: Dictionary?) in
+            photoModel.thumbnailImage = image
+        })
+        _ = ZYCachingImageManager.default().requestPreviewImage(for: phAsset, progressHandler: nil, resultHandler: { (image: UIImage?, dictionry: Dictionary?) in
+            var downloadFinined = true
+            if let cancelled = dictionry![PHImageCancelledKey] as? Bool {
+                downloadFinined = !cancelled
+            }
+            if downloadFinined, let error = dictionry![PHImageErrorKey] as? Bool {
+                downloadFinined = !error
+            }
+            if downloadFinined, let resultIsDegraded = dictionry![PHImageResultIsDegradedKey] as? Bool {
+                downloadFinined = !resultIsDegraded
+            }
+            if downloadFinined, let photoImage = image {
+                photoModel.originImage = photoImage
+                selectPhotos[0] = photoModel
+                group.leave()
+            }
+        })
         
         group.enter()
         let options = PHVideoRequestOptions.init()
@@ -368,11 +353,41 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
         let manager = PHImageManager.default()
         var urlUse : URL!
         manager.requestAVAsset(forVideo: phAsset, options: options) { (asset:AVAsset?, audioMix:AVAudioMix?,info:[AnyHashable:Any]?) in
+            
             let urlAsset : AVURLAsset = asset as! AVURLAsset;
-            let url = urlAsset.url;
-            urlUse = url;
+            let url = urlAsset.url;urlUse = url;
             //let data = NSData.init(contentsOf: url);
-            print("选中视频的url: \(String(describing: urlUse))")
+            print("选中视频的url: \(String(describing: urlUse))");
+            /*————————————————————进行视频的播放——————————————————*/
+            DispatchQueue.main.async(execute: {
+                let window = UIApplication.shared.delegate?.window
+                let cell  = collectionView.cellForItem(at: indexPath)
+                let frameRelativeToWindow = collectionView.convert(cell!.frame, to: window as! UIView)
+                let videoPlayView = VideoPlayView.init(frame: frameRelativeToWindow)
+                (window as! UIView).addSubview(videoPlayView)
+                videoPlayView.makeViewToPlay(url: urlUse)
+                videoPlayView.backgroundColor = UIColor.init(white: 0, alpha: 0)
+                
+                UIView.animate(withDuration: 0.25, animations: {
+                    videoPlayView.frame = CGRect.init(x: 0, y: 0, width: ZYScreenWidth, height: ZYScreenHeight)
+                    videoPlayView.backgroundColor = UIColor.init(white: 0, alpha: 1)
+                }, completion: { (finish) in
+                    
+                })
+                
+                videoPlayView.tapClosure = {(_ tap:UITapGestureRecognizer) in
+                    UIView.animate(withDuration: 0.25, animations: {
+                        videoPlayView.frame = frameRelativeToWindow
+                        videoPlayView.backgroundColor = UIColor.init(white: 0, alpha: 0)
+                    }) { (finish) in
+                        videoPlayView.player.pause()
+                        videoPlayView.removeFromSuperview()
+                    }
+                };
+                
+            })
+            /*-------------------------------------------------*/
+            
             group.leave()
         }
         
@@ -395,103 +410,47 @@ class ZYVideoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
 }
 
 
-//// 相册底部view
-//class ZYAlbumBottomView: UIView {
-//
-//    private lazy var previewButton: UIButton = {
-//        let button = UIButton(frame: CGRect(x: 12, y: 2, width: 60, height: 40))
-//        button.backgroundColor = UIColor.clear
-//        button.contentHorizontalAlignment = .left
-//        button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
-//        button.setTitle("预览", for: .normal)
-//        button.setTitleColor(UIColor(white: 0.5, alpha: 1), for: .disabled)
-//        button.setTitleColor(UIColor.white, for: .normal)
-//        button.addTarget(self, action: #selector(previewClick(button:)), for: .touchUpInside)
-//        button.isEnabled = false
-//        return button
-//    }()
-//
-//    private lazy var sureButton: UIButton = {
-//        let button = UIButton(frame: CGRect(x: ZYScreenWidth-12-64, y: 6, width: 64, height: 32))
-//        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-//        button.setTitle("完成", for: .normal)
-//        button.setBackgroundImage(UIImage.zyCreateImageWithColor(color: ZYPhotoAlbumSkinColor, size: CGSize(width: 64, height: 32))?.zySetRoundedCorner(radius: 4), for: .normal)
-//        button.setBackgroundImage(UIImage.zyCreateImageWithColor(color: ZYPhotoAlbumSkinColor.withAlphaComponent(0.5), size: CGSize(width: 64, height: 32))?.zySetRoundedCorner(radius: 4), for: .disabled)
-//        button.setTitleColor(UIColor(white: 0.5, alpha: 1), for: .disabled)
-//        button.setTitleColor(UIColor.white, for: .normal)
-//        button.addTarget(self, action: #selector(sureClick(button:)), for: .touchUpInside)
-//        button.isEnabled = false
-//        return button
-//    }()
-//
-//    var leftButtonTitle: String? {
-//        didSet {
-//            self.previewButton.setTitle(leftButtonTitle, for: .normal)
-//        }
-//    }
-//
-//    var rightButtonTitle: String? {
-//        didSet {
-//            self.sureButton.setTitle(rightButtonTitle, for: .normal)
-//        }
-//    }
-//
-//    var buttonIsEnabled = false {
-//        didSet {
-//            self.previewButton.isEnabled = buttonIsEnabled
-//            self.sureButton.isEnabled = buttonIsEnabled
-//        }
-//    }
-//
-//    // 完成闭包
-//    var rightClicked: (() -> Void)?
-//
-//    enum ZYAlbumBottomViewType {
-//        case normal, noPreview
-//    }
-//
-////    convenience init() {
-////        self.init(frame: CGRect(x: 0, y: ZYScreenHeight-ZYHomeBarHeight-44, width: ZYScreenWidth, height: 44+ZYHomeBarHeight), type: .normal)
-////    }
-////    convenience init(type: ZYAlbumBottomViewType) {
-////        self.init(frame: CGRect(x: 0, y: ZYScreenHeight-ZYHomeBarHeight-44, width: ZYScreenWidth, height: 44+ZYHomeBarHeight), type: type)
-////    }
-//    convenience init() {
-//        self.init(frame: CGRect(x: 0, y: ZYScreenHeight-ZYHomeBarHeight-44-64-44, width: ZYScreenWidth, height: 44+ZYHomeBarHeight), type: .normal)
-//    }
-//    convenience init(type: ZYAlbumBottomViewType) {
-//        self.init(frame: CGRect(x: 0, y: ZYScreenHeight-ZYHomeBarHeight-44-64-44, width: ZYScreenWidth, height: 44+ZYHomeBarHeight), type: type)
-//    }
-//
-//
-//
-//
-//    convenience override init(frame: CGRect) {
-//        self.init(frame: frame, type: .normal)
-//    }
-//
-//    init(frame: CGRect, type: ZYAlbumBottomViewType) {
-//        super.init(frame: frame)
-//        self.backgroundColor = UIColor(white: 0.1, alpha: 0.9)
-//        if type == .normal {
-//            self.addSubview(self.previewButton)
-//        }
-//
-//        self.addSubview(self.sureButton)
-//    }
-//
-//    required init?(coder aDecoder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//
-//    //MARK: handle events
-//    @objc func previewClick(button: UIButton) {
-//
-//    }
-//
-//    @objc func sureClick(button: UIButton) {
-//        if rightClicked != nil {
-//            rightClicked!()
-//        }
-//    }
-//}
+/*---------------------------------*/
+class VideoPlayView: UIView {
+    
+    var player: AVPlayer! = nil
+    var tapClosure : ((_ tap:UITapGestureRecognizer)->Void)! = nil
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(VideoPlayView.tapGestureAction(tap:))))
+        self.isUserInteractionEnabled = true;
+    }
+    
+    @objc func tapGestureAction(tap:UITapGestureRecognizer) -> Void {
+        if tapClosure != nil {
+            tapClosure(tap)
+        }
+    }
+    
+    var layerOfVideo:AVPlayerLayer! = nil
+    
+    func makeViewToPlay(url:URL){
+        //1.获取URL(远程/本地)
+        let item = AVPlayerItem.init(url: url)
+        //2.创建AVPlayer
+        self.player = AVPlayer.init(playerItem: item)
+        //添加AVPlayerLayer
+        let layer = AVPlayerLayer.init(player: self.player)
+        self.layer.addSublayer(layer);self.layerOfVideo = layer;
+        //---------------------
+        self.player.play()
+    }
+    
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.layerOfVideo.frame = CGRect.init(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height)
+    }
+    
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
